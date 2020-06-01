@@ -1,4 +1,4 @@
-import { Box, BoxProps, CSSReset, Flex, Link, ThemeProvider } from '@chakra-ui/core';
+import { Box, BoxProps, CSSReset, Flex, Link, ThemeProvider, Image, Text } from '@chakra-ui/core';
 import * as React from 'react';
 import { useContext } from 'react';
 import { render } from 'react-dom';
@@ -9,7 +9,7 @@ export interface StaticConfiguration {
     applicationName: string;
 }
 
-export const StaticConfiguration = React.createContext<StaticConfiguration|undefined>(undefined);
+export const StaticConfiguration = React.createContext<StaticConfiguration | undefined>(undefined);
 
 export const useStaticConfiguration = (): StaticConfiguration => {
     const mayBe = useContext(StaticConfiguration);
@@ -33,8 +33,20 @@ const TopBar: React.FC<BoxProps> = (props) => {
 };
 
 const MainView: React.FC<BoxProps> = (props) => {
-    return <Box {...props}>
-        Look at me two
+    const extensions = useExtensionRegistry().extensionsFor(mainViewContentExtension);
+    if (extensions.length > 1) {
+        throw new Error('only one mainViewContentExtension allowed');
+    }
+    const extension = extensions[0] ?? {
+        alt: 'nothing here',
+        caption: 'Messier 87',
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg'
+    };
+    return <Box as={'main'} {...props}>
+        <Flex direction={'column'} alignItems={'center'}>
+            <Image flexGrow={0} src={extension.imageUrl} height={'80vh'}/>
+            <Text>{extension.caption}</Text>
+        </Flex>
     </Box>;
 };
 
@@ -52,10 +64,16 @@ const PrivacyPolicy = () => {
     return <Link>Privacy Policy</Link>;
 };
 
-
 type BottomBarExtensionContext = { element: () => JSX.Element }
 
 const bottomBarExtension = BasicExtensionPoint.ofType<BottomBarExtensionContext>('BottomBarItem');
+
+type MainViewContentContext = {
+    imageUrl: string,
+    caption: string,
+    alt: string
+}
+const mainViewContentExtension = BasicExtensionPoint.ofType<MainViewContentContext>('MainViewContent');
 
 const BottomBar: React.FC<BoxProps> = (props) => {
     const registry = useExtensionRegistry();
@@ -86,7 +104,6 @@ const createBrandedExperience = (registry: ExtensionRegistry) => {
 };
 
 
-
 const nut = () => {
     const config: StaticConfiguration = {
         applicationName: 'Nut'
@@ -95,6 +112,11 @@ const nut = () => {
     registry.register(bottomBarExtension.implementWith({ element: TermsOfUse }));
     registry.register(bottomBarExtension.implementWith({ element: PrivacyPolicy }));
     registry.register(bottomBarExtension.implementWith({ element: Contact }));
+    registry.register(mainViewContentExtension.implementWith({
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Nut.svg',
+        caption: 'Nut - Egyptian goddess of the Sky',
+        alt: 'Nut'
+    }));
     const BrandedComponent = createBrandedExperience(registry);
     const dynamicConfiguration: DynamicConfiguration = { language: 'EN' };
     return <StaticConfiguration.Provider value={config}>
@@ -111,10 +133,14 @@ const geb = () => {
         return <Link>Geb Shows</Link>;
     };
 
-
     const registry = new DefaultExtensionRegistry();
     registry.register(bottomBarExtension.implementWith({ element: GebShows }));
     registry.register(bottomBarExtension.implementWith({ element: Contact }));
+    registry.register(mainViewContentExtension.implementWith({
+        imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/53/Geb.svg',
+        caption: 'Geb - Egyptian god of the Earth',
+        alt: 'Geb'
+    }));
     const BrandedComponent = createBrandedExperience(registry);
     const dynamicConfiguration: DynamicConfiguration = { language: 'EN' };
     return <StaticConfiguration.Provider value={config}>

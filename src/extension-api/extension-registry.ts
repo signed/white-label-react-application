@@ -5,7 +5,8 @@ export interface ExtensionRegistry {
     extensionsFor<T extends Object>(point: ExtensionPoint<T>): (Extension & T) [];
 }
 
-export const ExtensionPointTypes = ['BottomBarItem'] as const;
+// todo find a way to dynamically collect those and generate the type
+export const ExtensionPointTypes = ['BottomBarItem', 'MainViewContent'] as const;
 export type ExtensionPointType = typeof ExtensionPointTypes[number];
 
 export interface ExtensionPoint<T> {
@@ -48,7 +49,7 @@ export class DefaultExtensionRegistry implements ExtensionRegistry {
 
     extensionsFor<T extends object>(point: ExtensionPoint<T>): (Extension & T)[] {
         const mayBe = this.extensions.get(point.type) ?? [];
-        return mayBe as ((Extension & T) []);
+        return [...mayBe as ((Extension & T) [])];
     }
 }
 
@@ -60,4 +61,4 @@ export const useExtensionRegistry = (): ExtensionRegistry => {
         throw new Error('No extension registry found in the parent context');
     }
     return mayBeExtensionRegistry;
-}
+};
