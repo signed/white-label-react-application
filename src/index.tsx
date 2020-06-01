@@ -2,14 +2,17 @@ import { Box, BoxProps, CSSReset, Flex, Link, ThemeProvider } from '@chakra-ui/c
 import * as React from 'react';
 import { useContext } from 'react';
 import { render } from 'react-dom';
+import { BasicExtensionPoint, DefaultExtensionRegistry, ExtensionRegistry, useExtensionRegistry } from './extension-api/extension-registry';
 import './index.css';
 
 interface StaticConfiguration {
     applicationName: string;
 }
 
-interface DynamicConfiguration {
+type SupportedLanguage = 'EN' | 'DE';
 
+interface DynamicConfiguration {
+    language: SupportedLanguage;
 }
 
 const TopBar: React.FC<BoxProps> = (props) => {
@@ -30,35 +33,20 @@ const Legal = () => {
 };
 
 const Contact = () => {
-    return <Link>Send us a mail</Link>
-}
+    return <Link>Send us a mail</Link>;
+};
 const TermsOfUse = () => {
-    return <Link>Terms of Use</Link>
-}
+    return <Link>Terms of Use</Link>;
+};
 const PrivacyPolicy = () => {
-    return <Link>Privacy Policy</Link>
-}
-
-class BasicExtensionPoint implements ExtensionPoint {
-    static ofType(type: ExtensionPointType): ExtensionPoint {
-        return new BasicExtensionPoint(type)
-    }
-    constructor(public type:ExtensionPointType) {
-    }
+    return <Link>Privacy Policy</Link>;
+};
 
 
-    implementWith(element: () => JSX.Element): Extension {
-        return {
-            extensionPointType: this.type,
-            element
-        }
-    }
-}
-
-const bottomBarExtension = BasicExtensionPoint.ofType('BottomBarItem')
+const bottomBarExtension = BasicExtensionPoint.ofType('BottomBarItem');
 
 const BottomBar: React.FC<BoxProps> = (props) => {
-    const registry = useContext(ExtensionRegistry);
+    const registry = useExtensionRegistry();
     return <Box {...props} as={'footer'}>
         <Flex justifyContent={'space-around'}>
             {registry.extensionsFor(bottomBarExtension).map(extension => <extension.element/>)}
@@ -67,57 +55,21 @@ const BottomBar: React.FC<BoxProps> = (props) => {
     </Box>;
 };
 
-const ExtensionPointTypes = ['BottomBarItem'] as const;
-type ExtensionPointType = typeof ExtensionPointTypes[number];
-
-interface ExtensionPoint {
-    type: ExtensionPointType
-
-    implementWith(element: () => JSX.Element): Extension;
-}
-
-interface Extension {
-    extensionPointType: ExtensionPointType;
-    element: () => JSX.Element;
-}
-
-interface ExtensionRegistry {
-    extensionsFor(point: ExtensionPoint): Extension[];
-}
-
-class DefaultExtensionRegistry implements ExtensionRegistry {
-    private readonly extensions = new Map<ExtensionPointType, Extension []>();
-
-    register(extension: Extension) {
-        let mayBe = this.extensions.get(extension.extensionPointType);
-        if (mayBe === undefined) {
-            mayBe = [];
-            this.extensions.set(extension.extensionPointType, mayBe);
-        }
-        mayBe.push(extension);
-    }
-
-    extensionsFor(point: ExtensionPoint): Extension[] {
-        return this.extensions.get(point.type) ?? [];
-    }
-}
 
 const config: StaticConfiguration = {
     applicationName: 'Modulus'
 };
 
-const StaticConfiguration = React.createContext(config);
 const registry = new DefaultExtensionRegistry();
-const ExtensionRegistry = React.createContext<ExtensionRegistry>(registry);
-
 registry.register(bottomBarExtension.implementWith(TermsOfUse));
 registry.register(bottomBarExtension.implementWith(PrivacyPolicy));
 registry.register(bottomBarExtension.implementWith(Contact));
+const StaticConfiguration = React.createContext(config);
 
-const rootElement = document.getElementById('root');
-render(
-    <StaticConfiguration.Provider value={config}>
-        <ExtensionRegistry.Provider value={registry}>
+const createBrandedExperience = (registry: ExtensionRegistry) => {
+
+    return (config: DynamicConfiguration) => {
+        return <ExtensionRegistry.Provider value={registry}>
             <ThemeProvider>
                 <CSSReset/>
                 <Flex flexDirection={'column'} height={'100%'} border={'1px'}>
@@ -126,7 +78,17 @@ render(
                     <BottomBar flexGrow={0} borderTop={'1px'}/>
                 </Flex>
             </ThemeProvider>
-        </ExtensionRegistry.Provider>
+        </ExtensionRegistry.Provider>;
+    };
+};
+
+const BrandedComponent = createBrandedExperience(registry);
+
+const rootElement = document.getElementById('root');
+const dynamicConfiguration: DynamicConfiguration = { language: 'EN' };
+render(
+    <StaticConfiguration.Provider value={config}>
+        <BrandedComponent {...dynamicConfiguration}/>
     </StaticConfiguration.Provider>,
     rootElement
 );
