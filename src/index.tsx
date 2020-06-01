@@ -87,9 +87,9 @@ const createBrandedExperience = (registry: ExtensionRegistry) => {
 
 
 
-const romulus = () => {
+const nut = () => {
     const config: StaticConfiguration = {
-        applicationName: 'Romulus'
+        applicationName: 'Nut'
     };
     const registry = new DefaultExtensionRegistry();
     registry.register(bottomBarExtension.implementWith({ element: TermsOfUse }));
@@ -102,18 +102,18 @@ const romulus = () => {
     </StaticConfiguration.Provider>;
 };
 
-const remus = () => {
+const geb = () => {
     const config: StaticConfiguration = {
-        applicationName: 'Remus'
+        applicationName: 'Geb'
     };
 
-    const RemusShows = () => {
-        return <Link>Remus Shows</Link>;
+    const GebShows = () => {
+        return <Link>Geb Shows</Link>;
     };
 
 
     const registry = new DefaultExtensionRegistry();
-    registry.register(bottomBarExtension.implementWith({ element: RemusShows }));
+    registry.register(bottomBarExtension.implementWith({ element: GebShows }));
     registry.register(bottomBarExtension.implementWith({ element: Contact }));
     const BrandedComponent = createBrandedExperience(registry);
     const dynamicConfiguration: DynamicConfiguration = { language: 'EN' };
@@ -122,15 +122,15 @@ const remus = () => {
     </StaticConfiguration.Provider>;
 };
 
-const Romulus = romulus();
-const Remus = remus();
+const Nut = nut();
+const Geb = geb();
 
 const rootElement = document.getElementById('root');
 
 render(
     <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
-        {Romulus}
-        {Remus}
+        {Nut}
+        {Geb}
     </Flex>,
 
     rootElement
