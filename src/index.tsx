@@ -63,7 +63,7 @@ const BottomBar: React.FC<BoxProps> = (props) => {
         <Flex justifyContent={'space-around'}>
             {registry.extensionsFor(bottomBarExtension)
                 .map(extension => {
-                    return <extension.context.element/>;
+                    return <extension.element/>;
                 })}
             <Legal/>
         </Flex>
@@ -71,7 +71,7 @@ const BottomBar: React.FC<BoxProps> = (props) => {
 };
 
 const createBrandedExperience = (registry: ExtensionRegistry) => {
-    return (config: DynamicConfiguration) => {
+    return (_config: DynamicConfiguration) => {
         return <ExtensionRegistry.Provider value={registry}>
             <ThemeProvider>
                 <CSSReset/>
