@@ -43,13 +43,18 @@ const PrivacyPolicy = () => {
 };
 
 
-const bottomBarExtension = BasicExtensionPoint.ofType('BottomBarItem');
+type BottomBarExtensionContext = { element: () => JSX.Element }
+
+const bottomBarExtension = BasicExtensionPoint.ofType<BottomBarExtensionContext>('BottomBarItem');
 
 const BottomBar: React.FC<BoxProps> = (props) => {
     const registry = useExtensionRegistry();
     return <Box {...props} as={'footer'}>
         <Flex justifyContent={'space-around'}>
-            {registry.extensionsFor(bottomBarExtension).map(extension => <extension.element/>)}
+            {registry.extensionsFor(bottomBarExtension)
+                .map(extension => {
+                    return <extension.context.element/>;
+                })}
             <Legal/>
         </Flex>
     </Box>;
@@ -61,9 +66,9 @@ const config: StaticConfiguration = {
 };
 
 const registry = new DefaultExtensionRegistry();
-registry.register(bottomBarExtension.implementWith(TermsOfUse));
-registry.register(bottomBarExtension.implementWith(PrivacyPolicy));
-registry.register(bottomBarExtension.implementWith(Contact));
+registry.register(bottomBarExtension.implementWith({ element: TermsOfUse }));
+registry.register(bottomBarExtension.implementWith({ element: PrivacyPolicy }));
+registry.register(bottomBarExtension.implementWith({ element: Contact }));
 const StaticConfiguration = React.createContext(config);
 
 const createBrandedExperience = (registry: ExtensionRegistry) => {

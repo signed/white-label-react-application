@@ -2,44 +2,44 @@ import { useContext } from 'react';
 import * as React from 'react';
 
 export interface ExtensionRegistry {
-    extensionsFor(point: ExtensionPoint): Extension[];
+    extensionsFor<T>(point: ExtensionPoint<T>): Extension<T>[];
 }
 
 export const ExtensionPointTypes = ['BottomBarItem'] as const;
 export type ExtensionPointType = typeof ExtensionPointTypes[number];
 
-export interface ExtensionPoint {
+export interface ExtensionPoint<T> {
     type: ExtensionPointType
 
-    implementWith(element: () => JSX.Element): Extension;
+    implementWith(value: T): Extension<T>;
 }
 
-export interface Extension {
+export interface Extension<T> {
     extensionPointType: ExtensionPointType;
-    element: () => JSX.Element;
+    context: T;
 }
 
-export class BasicExtensionPoint implements ExtensionPoint {
-    static ofType(type: ExtensionPointType): ExtensionPoint {
-        return new BasicExtensionPoint(type);
+export class BasicExtensionPoint<T> implements ExtensionPoint<T> {
+    static ofType<S>(type: ExtensionPointType): ExtensionPoint<S> {
+        return new BasicExtensionPoint<S>(type);
     }
 
     constructor(public type: ExtensionPointType) {
     }
 
 
-    implementWith(element: () => JSX.Element): Extension {
+    implementWith(context: T): Extension<T> {
         return {
             extensionPointType: this.type,
-            element
+            context
         };
     }
 }
 
 export class DefaultExtensionRegistry implements ExtensionRegistry {
-    private readonly extensions = new Map<ExtensionPointType, Extension []>();
+    private readonly extensions = new Map<ExtensionPointType, Extension<any> []>();
 
-    register(extension: Extension) {
+    register<T>(extension: Extension<T>) {
         let mayBe = this.extensions.get(extension.extensionPointType);
         if (mayBe === undefined) {
             mayBe = [];
@@ -48,7 +48,7 @@ export class DefaultExtensionRegistry implements ExtensionRegistry {
         mayBe.push(extension);
     }
 
-    extensionsFor(point: ExtensionPoint): Extension[] {
+    extensionsFor<T>(point: ExtensionPoint<T>): Extension<T>[] {
         return this.extensions.get(point.type) ?? [];
     }
 }
