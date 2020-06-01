@@ -6,6 +6,7 @@ import { BasicExtensionPoint, ExtensionRegistry, useExtensionRegistry } from '..
 export interface StaticConfiguration {
     applicationName: string;
 }
+
 export const StaticConfiguration = React.createContext<StaticConfiguration | undefined>(undefined);
 export const useStaticConfiguration = (): StaticConfiguration => {
     const mayBe = useContext(StaticConfiguration);
@@ -59,10 +60,10 @@ const MainView: React.FC<BoxProps> = (props) => {
         imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4f/Black_hole_-_Messier_87_crop_max_res.jpg'
     };
     return <Box as={'main'} {...props}>
-    <Flex direction={'column'} alignItems={'center'}>
-    <Image flexGrow={0} src={extension.imageUrl} height={'80vh'}/>
-    <Text>{extension.caption}</Text>
-    </Flex>
+        <Flex direction={'column'} alignItems={'center'}>
+            <Image flexGrow={0} src={extension.imageUrl} height={'80vh'}/>
+            <Text>{extension.caption}</Text>
+        </Flex>
     </Box>;
 };
 
@@ -76,14 +77,14 @@ export interface DynamicConfiguration {
 export const createBrandedExperience = (registry: ExtensionRegistry) => {
     return (_config: DynamicConfiguration) => {
         return <ExtensionRegistry.Provider value={registry}>
-        <ThemeProvider>
-            <CSSReset/>
-        <Flex flexDirection={'column'} height={'100%'} border={'1px'} flexGrow={1}>
-        <TopBar flexGrow={0} borderBottom={'1px'}/>
-        <MainView flexGrow={1}/>
-        <BottomBar flexGrow={0} borderTop={'1px'}/>
-        </Flex>
-        </ThemeProvider>
+            <ThemeProvider>
+                <CSSReset/>
+                <Flex flexDirection={'column'} height={'100%'} border={'1px'} flexGrow={1}>
+                    <TopBar flexGrow={0} borderBottom={'1px'}/>
+                    <MainView flexGrow={1}/>
+                    <BottomBar flexGrow={0} borderTop={'1px'}/>
+                </Flex>
+            </ThemeProvider>
         </ExtensionRegistry.Provider>;
     };
 };
