@@ -1,4 +1,4 @@
-import { Flex, Link } from '@chakra-ui/core';
+import { Flex, Link } from '@chakra-ui/react';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { bottomBarExtension, createBrandedExperience, DynamicConfiguration, mainViewContentExtension, StaticConfiguration } from './core/core';

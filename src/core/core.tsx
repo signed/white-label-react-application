@@ -1,4 +1,4 @@
-import { Box, BoxProps, CSSReset, Flex, Image, Link, Text, ThemeProvider } from '@chakra-ui/core';
+import { Box, BoxProps, CSSReset, Flex, Image, Link, Text, ChakraProvider } from '@chakra-ui/react';
 import { useContext } from 'react';
 import * as React from 'react';
 import { BasicExtensionPoint, ExtensionRegistry, useExtensionRegistry } from '../extension-api/extension-registry';
@@ -77,14 +77,14 @@ export interface DynamicConfiguration {
 export const createBrandedExperience = (registry: ExtensionRegistry) => {
     return (_config: DynamicConfiguration) => {
         return <ExtensionRegistry.Provider value={registry}>
-            <ThemeProvider>
+            <ChakraProvider>
                 <CSSReset/>
                 <Flex flexDirection={'column'} height={'100%'} border={'1px'} flexGrow={1}>
                     <TopBar flexGrow={0} borderBottom={'1px'}/>
                     <MainView flexGrow={1}/>
                     <BottomBar flexGrow={0} borderTop={'1px'}/>
                 </Flex>
-            </ThemeProvider>
+            </ChakraProvider>
         </ExtensionRegistry.Provider>;
     };
 };
