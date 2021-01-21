@@ -1,5 +1,6 @@
-import { Flex, Link } from '@chakra-ui/react';
+import { Box, Button, ChakraProvider, Link, Spinner, Stack, VStack } from '@chakra-ui/react';
 import * as React from 'react';
+import { useState } from 'react';
 import { render } from 'react-dom';
 import { bottomBarExtension, createBrandedExperience, DynamicConfiguration, mainViewContentExtension, StaticConfiguration } from './core/core';
 import { DefaultExtensionRegistry } from './extension-api/extension-registry';
@@ -64,10 +65,29 @@ const Geb = geb();
 
 const rootElement = document.getElementById('root');
 
-render(
-    <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
-        {Nut}
-        {Geb}
-    </Flex>,
+const Main: React.FC = () => {
+    return (<Box border={1}>This is the main content</Box>);
+};
+
+const Footer: React.FC = (props) => {
+    const [show, setShow] = useState(true);
+    return <Stack direction="row">
+        <Box height={10} bg="blue" border="1px">Cool Stuff</Box>
+        <Box height={10} bg="green">Fancy Pants</Box>
+        <VStack spacing={2}>
+            <Button onClick={() => setShow(s => !s)}><Spinner color="red.500" mr={2}/>Can't believe its not butter</Button>
+            {show && <Box height={10} bg="black">Monday</Box>}
+            {show && <Box height={10} bg="gray">Tuesday</Box>}
+        </VStack>
+    </Stack>;
+};
+
+render(<ChakraProvider>
+        <VStack>
+            <Main/>
+            <Footer/>
+        </VStack>
+    </ChakraProvider>
+    ,
     rootElement
 );
