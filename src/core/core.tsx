@@ -1,10 +1,10 @@
 import { Box, BoxProps, CSSReset, Flex, Image, Link, Text } from '@chakra-ui/react'
-import { useContext } from 'react'
 import * as React from 'react'
+import { useContext } from 'react'
 import {
   BasicExtensionPoint,
-  ExtensionRegistryValue,
   ExtensionRegistry,
+  ExtensionRegistryValue,
   useExtensionRegistry,
 } from '../extension-api/extension-registry'
 

@@ -1,4 +1,14 @@
-import { ChakraProvider, Flex, Link, VStack } from '@chakra-ui/react'
+import {
+  Button,
+  ChakraProvider,
+  ColorModeScript,
+  extendTheme,
+  Flex,
+  Link,
+  ThemeConfig,
+  useColorMode,
+  VStack,
+} from '@chakra-ui/react'
 import * as React from 'react'
 import { render } from 'react-dom'
 import {
@@ -6,8 +16,8 @@ import {
   createBrandedExperience,
   DynamicConfiguration,
   mainViewContentExtension,
-  StaticConfigurationValue,
   StaticConfiguration,
+  StaticConfigurationValue,
 } from './core/core'
 import { DefaultExtensionRegistry } from './extension-api/extension-registry'
 import './index.css'
@@ -79,15 +89,31 @@ const Geb = geb()
 
 const rootElement = document.getElementById('root')
 
+const config: ThemeConfig = {
+  initialColorMode: 'light',
+  useSystemColorMode: false,
+}
+
+const theme = extendTheme({ config })
+
+const ColorModeSwitch = () => {
+  const { colorMode, toggleColorMode } = useColorMode()
+  return <Button onClick={toggleColorMode}>Toggle {colorMode === 'light' ? 'Dark' : 'Light'}</Button>
+}
+
 render(
-  <ChakraProvider>
-    <VStack>
-      <div>topbar</div>
-      <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
-        {Nut}
-        {Geb}
-      </Flex>
-    </VStack>
-  </ChakraProvider>,
+  <>
+    <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <ChakraProvider theme={theme}>
+      <VStack>
+        <ColorModeSwitch />
+        <header>topbar</header>
+        <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
+          {Nut}
+          {Geb}
+        </Flex>
+      </VStack>
+    </ChakraProvider>
+  </>,
   rootElement,
 )
