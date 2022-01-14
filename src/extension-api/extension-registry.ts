@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import * as React from 'react'
 
-export interface ExtensionRegistry {
+export interface ExtensionRegistryValue {
   extensionsFor<T extends Object>(point: ExtensionPoint<T>): (Extension & T)[]
 }
 
@@ -34,7 +34,7 @@ export class BasicExtensionPoint<T extends object> implements ExtensionPoint<T> 
   }
 }
 
-export class DefaultExtensionRegistry implements ExtensionRegistry {
+export class DefaultExtensionRegistry implements ExtensionRegistryValue {
   private readonly extensions = new Map<ExtensionPointType, Extension[]>()
 
   register<T>(extension: Extension & T) {
@@ -52,9 +52,9 @@ export class DefaultExtensionRegistry implements ExtensionRegistry {
   }
 }
 
-export const ExtensionRegistry = React.createContext<ExtensionRegistry | undefined>(undefined)
+export const ExtensionRegistry = React.createContext<ExtensionRegistryValue | undefined>(undefined)
 
-export const useExtensionRegistry = (): ExtensionRegistry => {
+export const useExtensionRegistry = (): ExtensionRegistryValue => {
   const mayBeExtensionRegistry = useContext(ExtensionRegistry)
   if (mayBeExtensionRegistry === undefined) {
     throw new Error('No extension registry found in the parent context')

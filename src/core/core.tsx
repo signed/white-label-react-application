@@ -1,7 +1,12 @@
 import { Box, BoxProps, CSSReset, Flex, Image, Link, Text } from '@chakra-ui/react'
 import { useContext } from 'react'
 import * as React from 'react'
-import { BasicExtensionPoint, ExtensionRegistry, useExtensionRegistry } from '../extension-api/extension-registry'
+import {
+  BasicExtensionPoint,
+  ExtensionRegistryValue,
+  ExtensionRegistry,
+  useExtensionRegistry,
+} from '../extension-api/extension-registry'
 
 export interface StaticConfigurationValue {
   applicationName: string
@@ -78,7 +83,7 @@ export interface DynamicConfiguration {
   language: SupportedLanguage
 }
 
-export const createBrandedExperience = (registry: ExtensionRegistry) => {
+export const createBrandedExperience = (registry: ExtensionRegistryValue) => {
   return (_config: DynamicConfiguration) => {
     return (
       <ExtensionRegistry.Provider value={registry}>
