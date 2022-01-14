@@ -1,4 +1,4 @@
-import { Flex, Link } from '@chakra-ui/react';
+import { ChakraProvider, Flex, Link, VStack } from '@chakra-ui/react';
 import * as React from 'react';
 import { render } from 'react-dom';
 import { bottomBarExtension, createBrandedExperience, DynamicConfiguration, mainViewContentExtension, StaticConfiguration } from './core/core';
@@ -65,9 +65,14 @@ const Geb = geb();
 const rootElement = document.getElementById('root');
 
 render(
-    <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
-        {Nut}
-        {Geb}
-    </Flex>,
+    <ChakraProvider>
+        <VStack>
+            <div>topbar</div>
+            <Flex direction={'row'} height={'100%'} width={'100%'} justifyContent={'space-between'}>
+                {Nut}
+                {Geb}
+            </Flex>
+        </VStack>
+    </ChakraProvider>,
     rootElement
 );
