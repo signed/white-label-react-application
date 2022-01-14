@@ -3,12 +3,12 @@ import { useContext } from 'react';
 import * as React from 'react';
 import { BasicExtensionPoint, ExtensionRegistry, useExtensionRegistry } from '../extension-api/extension-registry';
 
-export interface StaticConfiguration {
+export interface StaticConfigurationValue {
     applicationName: string;
 }
 
-export const StaticConfiguration = React.createContext<StaticConfiguration | undefined>(undefined);
-export const useStaticConfiguration = (): StaticConfiguration => {
+export const StaticConfiguration = React.createContext<StaticConfigurationValue | undefined>(undefined);
+export const useStaticConfiguration = (): StaticConfigurationValue => {
     const mayBe = useContext(StaticConfiguration);
     if (mayBe === undefined) {
         throw new Error('Add a StaticConfiguration.Provider to the parent of the calling component');

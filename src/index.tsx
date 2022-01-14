@@ -1,7 +1,7 @@
 import { ChakraProvider, Flex, Link, VStack } from '@chakra-ui/react';
 import * as React from 'react';
 import { render } from 'react-dom';
-import { bottomBarExtension, createBrandedExperience, DynamicConfiguration, mainViewContentExtension, StaticConfiguration } from './core/core';
+import { bottomBarExtension, createBrandedExperience, DynamicConfiguration, mainViewContentExtension, StaticConfigurationValue, StaticConfiguration } from './core/core';
 import { DefaultExtensionRegistry } from './extension-api/extension-registry';
 import './index.css';
 
@@ -16,7 +16,7 @@ const PrivacyPolicy = () => {
 };
 
 const nut = () => {
-    const config: StaticConfiguration = {
+    const config: StaticConfigurationValue = {
         applicationName: 'Nut'
     };
     const registry = new DefaultExtensionRegistry();
@@ -36,7 +36,7 @@ const nut = () => {
 };
 
 const geb = () => {
-    const config: StaticConfiguration = {
+    const config: StaticConfigurationValue = {
         applicationName: 'Geb'
     };
 
